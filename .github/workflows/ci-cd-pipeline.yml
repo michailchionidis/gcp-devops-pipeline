@@ -51,6 +51,13 @@ jobs:
     - name: Configure Docker to use Artifact Registry
       run: gcloud auth configure-docker europe-west1-docker.pkg.dev
 
+    - name: Create Artifact Registry repository if it doesn't exist
+      run: |
+        gcloud artifacts repositories create gcp-devops-project \
+          --repository-format=docker \
+          --location=europe-west1 \
+          --description="Docker repository for gcp-devops-project" || echo "Repository already exists"
+
     - name: Build and push Docker image to Artifact Registry
       env:
         GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
