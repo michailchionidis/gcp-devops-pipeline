@@ -42,13 +42,11 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
-    - name: Log in to Google Container Registry
-      run: echo "${{ secrets.GCP_KEY }}" | base64 --decode | docker login -u _json_key --password-stdin https://gcr.io
-
     - name: Authenticate Docker to GCR
-      run: |
-        gcloud auth activate-service-account --key-file=$HOME/gcp-key.json
-        gcloud auth configure-docker --quiet
+      run: echo "${{ secrets.GCP_KEY }}" | base64 --decode > $HOME/gcp-key.json
+      
+    - name: Log in to GCR
+      run: gcloud auth activate-service-account --key-file=$HOME/gcp-key.json
 
     - name: Build and push Docker image to GCR
       env:
