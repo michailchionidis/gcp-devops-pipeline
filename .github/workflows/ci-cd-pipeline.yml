@@ -59,7 +59,7 @@ jobs:
         IMAGE: gcr.io/${{ secrets.GCP_PROJECT_ID }}/gcp-devops-project
         GCP_KEY: ${{ secrets.GCP_KEY }}
       run: |
-        echo "${{ secrets.GCP_KEY }}" > keyfile.json
+        echo "${{ secrets.GCP_KEY }}" | base64 --decode > keyfile.json
         gcloud auth activate-service-account --key-file=keyfile.json
         gcloud --quiet config set project $PROJECT_ID
         gcloud run deploy $SERVICE_NAME --image $IMAGE --platform managed --region europe-west8 --allow-unauthenticated
