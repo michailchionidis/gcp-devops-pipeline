@@ -63,7 +63,7 @@ jobs:
       env:
         GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       run: |
-        docker buildx build --platform linux/amd64 --tag europe-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/repository/gcp-devops-project:latest --push .
+        docker buildx build --platform linux/amd64 --push -t europe-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gcp-devops-project/gcp-devops-project:latest .
 
     - name: Deploy to Google Cloud Run
       env:
