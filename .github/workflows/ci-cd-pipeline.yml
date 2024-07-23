@@ -60,4 +60,4 @@ jobs:
       run: |
         gcloud auth activate-service-account --key-file=- <<< "${{ secrets.GCP_KEY }}"
         gcloud --quiet config set project $PROJECT_ID
-        gcloud run deploy $SERVICE_NAME --image $IMAGE --platform managed --region eu-west8 --allow-unauthenticated
+        gcloud run deploy $SERVICE_NAME --image $IMAGE --platform managed --region europe-west8 --allow-unauthenticated
