@@ -40,7 +40,7 @@ def test_extract_data(requests_mock, sample_raw_data):
     """Test the data extraction from the Weather API"""
     city = "London"
     api_key = os.getenv('API_KEY', 'fake_api_key')  # Use the environment variable or a default value
-    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid=fake_api_key&units=metric"
+    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
     requests_mock.get(url, json=sample_raw_data)
 
     request_data = {"city": city}
