@@ -69,7 +69,7 @@ jobs:
       env:
         PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
         SERVICE_NAME: gcp-devops-project
-        IMAGE: europe-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/repository/gcp-devops-project:latest
+        IMAGE: europe-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/gcp-devops-project/gcp-devops-project:latest
       run: |
         gcloud auth activate-service-account --key-file=$HOME/gcp-key.json
         gcloud --quiet config set project $PROJECT_ID
