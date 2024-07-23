@@ -1,0 +1,9 @@
+# Exclude the .env file
+src/.env
+
+# Exclude the virtual environment folder
+venv/
+
+# Exclude the service account file
+src/*.json
+terraform/*.json
