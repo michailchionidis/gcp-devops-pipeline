@@ -54,6 +54,7 @@ jobs:
     - name: Create Artifact Registry repository if it doesn't exist
       run: |
         gcloud artifacts repositories create gcp-devops-project \
+          --project ${{ secrets.GCP_PROJECT_ID }} \
           --repository-format=docker \
           --location=europe-west1 \
           --description="Docker repository for gcp-devops-project" || echo "Repository already exists"
