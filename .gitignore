@@ -7,3 +7,8 @@ venv/
 # Exclude the service account file
 src/*.json
 terraform/*.json
+
+# Exclude Terraform files
+.terraform/
+*.tfstate
+*.tfstate.backup
