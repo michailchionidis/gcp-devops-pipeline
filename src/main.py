@@ -3,8 +3,11 @@ import pandas as pd
 from google.cloud import bigquery
 import os
 from dotenv import load_dotenv
+from flask import Flask, request, jsonify
 
 load_dotenv()  # Load environment variables from a .env file
+
+app = Flask(__name__)
 
 def is_running_in_gcp():
     return os.getenv('K_SERVICE', False)
@@ -98,8 +101,8 @@ def upload_df_to_bigquery(dataframe: pd.DataFrame, project_id: str, dataset_id: 
         print(e)
         raise e
 
-def main(request):
-
+@app.route('/', methods=['POST'])
+def main():
     # Extract data from weather API
     data = extract_data(request)
 
@@ -112,26 +115,8 @@ def main(request):
     gcp_table_name = os.getenv('GCP_TABLE_NAME')
     upload_df_to_bigquery(df, gcp_project_id, gcp_dataset_name, gcp_table_name)
 
-    return {"status": "success"}
+    return jsonify({"status": "success"})
 
 if __name__ == "__main__":
-    # For local testing
-    city = "Thessaloniki"
-
-    # Simulate request data
-    request_data = {
-        "city": city,
-    }
-
-    # Convert to a request-like object
-    class Request:
-        def __init__(self, json):
-            self._json = json
-
-        def get_json(self):
-            return self._json
-
-    simulated_request = Request(request_data)
-
-    # Call main with simulated request
-    print(main(simulated_request))
+    port = int(os.environ.get('PORT', 8080))
+    app.run(host='0.0.0.0', port=port)
