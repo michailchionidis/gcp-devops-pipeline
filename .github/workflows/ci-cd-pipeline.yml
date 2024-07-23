@@ -11,7 +11,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: production
 
     steps:
     - name: Checkout code
@@ -27,9 +26,17 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r src/requirements.txt
 
+    - name: Set environment variables
+      run: |
+        echo "API_KEY=${{ secrets.API_KEY }}" >> $GITHUB_ENV
+        echo "GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}" >> $GITHUB_ENV
+        echo "GCP_DATASET_NAME=${{ secrets.GCP_DATASET_NAME }}" >> $GITHUB_ENV
+        echo "GCP_TABLE_NAME=${{ secrets.GCP_TABLE_NAME }}" >> $GITHUB_ENV
+
+    - name: Add src to PYTHONPATH
+      run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src" >> $GITHUB_ENV
+
     - name: Run tests
-      env:
-        PYTHONPATH: ./src
       run: pytest tests/
 
     - name: Set up Docker Buildx
@@ -45,15 +52,12 @@ jobs:
       run: |
         docker buildx build --platform linux/amd64 --push -t ${{ secrets.DOCKER_USERNAME }}/gcp-devops-project:latest .
 
-    - name: Write GCP key to file
-      run: echo "${{ secrets.GCP_KEY }}" > keyfile.json
-
     - name: Deploy to Google Cloud Run
       env:
         PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
         SERVICE_NAME: gcp-devops-project
         IMAGE: gcr.io/${{ secrets.GCP_PROJECT_ID }}/gcp-devops-project
       run: |
-        gcloud auth activate-service-account --key-file=keyfile.json
+        echo "${{ secrets.GCP_KEY }}" | gcloud auth activate-service-account --key-file=-
         gcloud --quiet config set project $PROJECT_ID
-        gcloud run deploy $SERVICE_NAME --image $IMAGE --platform managed --region europe-west8 --allow-unauthenticated
+        gcloud run deploy $SERVICE_NAME --image $IMAGE --platform managed --region eu-west8 --allow-unauthenticated
